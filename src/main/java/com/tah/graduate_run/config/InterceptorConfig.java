@@ -18,6 +18,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class InterceptorConfig implements WebMvcConfigurer {
     @Value("${face-file-path}")
     private String faceFilePath;
+    @Value("${emoji-file-path}")
+    private String emojiFilePath;
+    @Value("${articlepics-path}")
+    private String articlepicsPath;
+    @Value("${box-path}")
+    private String boxPath;
+
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -26,8 +33,13 @@ public class InterceptorConfig implements WebMvcConfigurer {
          * 如果访问的资源路径是以“/graduate/face/”开头的，
          * 就给我映射到faceFilePath，去找你要的资源
          */
-        registry.addResourceHandler("/graduate/face/**")
-                .addResourceLocations("file:"+faceFilePath);
+        registry.addResourceHandler("/graduate/face/**"
+                , "/graduate/emoji/**", "/graduate/articlepics/**"
+                ,"/graduate/box/**")
+                .addResourceLocations("file:" + faceFilePath)
+                .addResourceLocations("file:" + emojiFilePath)
+                .addResourceLocations("file:" + articlepicsPath)
+                .addResourceLocations("file:" + boxPath);
     }
 
 //    /**
@@ -44,7 +56,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 //    }
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry){
+    public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor())
                 //添加拦截路径
                 .addPathPatterns("/**")
@@ -54,10 +66,11 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     /**
      * 全局注入拦截器配置Bean
+     *
      * @return
      */
     @Bean
-    public AuthenticationInterceptor authenticationInterceptor(){
+    public AuthenticationInterceptor authenticationInterceptor() {
         return new AuthenticationInterceptor();
     }
 }

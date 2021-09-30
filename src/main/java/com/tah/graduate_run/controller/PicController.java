@@ -1,6 +1,10 @@
 package com.tah.graduate_run.controller;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.tah.graduate_run.service.PicService;
+import org.apache.tomcat.util.json.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -17,10 +21,13 @@ public class PicController {
     @Resource
     PicService picService;
 
+    @Resource
+    private RedisTemplate<String, Object> strRedisTemplate;
 
     @GetMapping("/test")
     public String test() {
-        return "test";
+        //strRedisTemplate.opsForValue().set("test", "zheshiceshi1");
+        return (String) strRedisTemplate.opsForValue().get("test");
     }
 
 

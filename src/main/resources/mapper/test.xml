@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--&lt;!&ndash;上面是头部命名空间&ndash;&gt;-->
+<!--&lt;!&ndash;mapper开始就是自己定义的了&ndash;&gt;-->
+<!--<mapper namespace="com.tah.graduate_run.mapper.SysUserMapper">    &lt;!&ndash;对应的mapper类的包路径&ndash;&gt;-->
+<!--    <resultMap id="faceMap" type="HashMap"> &lt;!&ndash;返回查询结果对应的实体类&ndash;&gt;-->
+<!--        <result column="username" property="key" jdbcType="VARCHAR"/>-->
+<!--        <result column="face" property="value" jdbcType="INT"/>-->
+<!--    </resultMap>-->
+
+<!--<select id="getNameAndFace" resultMap="faceMap">-->
+<!--    SELECT username,face FROM sys_user where face>0-->
+<!--</select>-->
+<!--</mapper>-->
+<mapper>
+
+</mapper>

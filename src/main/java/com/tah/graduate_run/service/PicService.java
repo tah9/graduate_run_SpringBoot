@@ -1,12 +1,18 @@
 package com.tah.graduate_run.service;
 
+import com.tah.graduate_run.mapper.SysUserMapper;
 import com.tah.graduate_run.untils.Code;
+import com.tah.graduate_run.untils.MyMap;
 import com.tah.graduate_run.untils.Result;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
@@ -19,16 +25,22 @@ import java.util.Map;
  */
 @Service
 public class PicService {
+    @Resource
+    RedisTemplate<String, Object> redis;
+
+    @Resource
+    SysUserMapper userMapper;
+
 
     public Map uptoQiNiu(MultipartFile file) {
-        try {
-            String url = new QiNiu().uploadPicture(file);
-            System.out.println(url);
-            return Result.success().add("url", url);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.fail(Code.UPQI_ERR, e.toString());
-        }
+//        try {
+//            String url = new QiNiu().uploadPicture(file);
+//            System.out.println(url);
+//            return Result.success().add("url", url);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+            return Result.fail(Code.UPQI_ERR, "e.toString()");
+//        }
     }
 
 
@@ -47,13 +59,16 @@ public class PicService {
         String username = params.getParameter("username");
         File userFolder = new File(faceFilePath + username);
 
+        MyMap map = new MyMap().add("username",username);
         int index = 0;
         // 检测用户目录是否存在
         if (!userFolder.exists()) {
             userFolder.mkdirs();
+            userMapper.insertTourist(username);
         }//起始下标延续已有人脸数
         else {
             index = userFolder.list().length;
+            map.add("update", true);
         }
 
         //获取文件，注意这里不可以从params参数获取
@@ -67,6 +82,9 @@ public class PicService {
                         "/graduate/face/" + username + "/" + (index++) + ".jpg";
                 resultsPath.add(url);
             }
+
+            //写入文件夹后，通知探头加入此用户人脸信息
+            WebSocketService.sendMessage("EnterExit", map);
             return Result.success().add("urlList", resultsPath);
         } catch (IOException e) {
             e.printStackTrace();

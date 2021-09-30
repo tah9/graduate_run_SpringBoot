@@ -1,5 +1,8 @@
 package com.tah.graduate_run.untils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Result {
     public static MyMap success() {
         MyMap map = new MyMap();
@@ -14,3 +17,4 @@ public class Result {
         return map;
     }
 }
+
