@@ -3,6 +3,7 @@ package com.tah.graduate_run.controller;
 import com.tah.graduate_run.config.UseToken;
 import com.tah.graduate_run.entity.SysUser;
 import com.tah.graduate_run.entity.UserTemp;
+import com.tah.graduate_run.mapper.UserNumberMapper;
 import com.tah.graduate_run.service.SysUserService;
 import com.tah.graduate_run.service.user.SysUserInfoService;
 import org.springframework.web.bind.annotation.*;
@@ -21,13 +22,24 @@ import java.util.Map;
 public class SysUserController {
 
     @Resource
-    SysUserService userService; @Resource
+    SysUserService userService;
+    @Resource
+    UserNumberMapper numberMapper;
+    @Resource
     SysUserInfoService userInfoService;
-
+    @Resource
+    HttpServletRequest request;
     @PostMapping("/login")
     public Map login(@RequestBody SysUser user) {
         return userService.login(user.getPhone_number(), user.getPassword());
     }
+
+    @UseToken
+    @PostMapping("/changeUser")
+    public Map changeUser(HttpServletRequest request){
+        return userService.changeUser(request);
+    }
+
 
     @UseToken
     @GetMapping("/useTokenGetUser")
@@ -46,12 +58,6 @@ public class SysUserController {
     @PutMapping("/changepwd")
     public Map changepwd(@RequestBody Map map) {
         return userService.changePWD(map);
-    }
-
-    @UseToken
-    @PutMapping("/addface/{phone_number}")
-    public Map addFace(@PathVariable("phone_number")String phone_number){
-        return userService.addFace(phone_number);
     }
 
 
@@ -76,8 +82,11 @@ public class SysUserController {
         return userInfoService.byThumbUpCount(id);
     }
 
-    @GetMapping("/info/{id}")
-    public Map getUserInfo(@PathVariable("id") String id) {
-        return userInfoService.getUserInfo(id);
+    @UseToken
+    @PostMapping("/info")
+    public Map getUserInfo(@RequestBody Map map) {
+        return userInfoService.getUserInfo(request,map);
     }
+
+
 }

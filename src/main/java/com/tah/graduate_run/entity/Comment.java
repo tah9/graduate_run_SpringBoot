@@ -27,4 +27,6 @@ public class Comment {
     String userAvatar;
     long rank_score;
     String recent_reply_ids;
+    //是否已点赞
+    boolean beLike;
 }

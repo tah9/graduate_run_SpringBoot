@@ -21,4 +21,8 @@ public class Tag {
     long feednum;
     String intro;
     String follow_list;
+    String keywords;
+
+    //是否关注
+    boolean beFollow;
 }

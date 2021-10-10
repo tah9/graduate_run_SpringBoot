@@ -1,6 +1,7 @@
 package com.tah.graduate_run.service.article;
 
 import com.tah.graduate_run.mapper.ArticleMapper;
+import com.tah.graduate_run.mapper.UserNumberMapper;
 import com.tah.graduate_run.untils.Result;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +15,9 @@ import java.util.Map;
 @Service
 public class ArticleLikeService {
     @Resource
-    ArticleMapper mapper;
+    UserNumberMapper userNumberMapper;
 
     public Map myLikes(String id){
-        return Result.success().add("likes", mapper.myLikes(id));
+        return Result.success().add("likes", userNumberMapper.myLikes("article",id));
     }
 }

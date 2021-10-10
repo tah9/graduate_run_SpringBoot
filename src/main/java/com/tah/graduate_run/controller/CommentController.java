@@ -1,10 +1,7 @@
 package com.tah.graduate_run.controller;
 
 import com.tah.graduate_run.service.comment.CommentLoadService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +20,12 @@ public class CommentController {
     HttpServletRequest request;
 
     @GetMapping("/comment/{fid}")
-    public Map getCommentList(@PathVariable("fid")String fid){
-        return loadService.getCommentList(fid);
+    public Map getCommentList(HttpServletRequest request,@PathVariable("fid")String fid){
+        return loadService.getCommentList(request,fid);
+    }
+
+    @PostMapping("/commentPush")
+    public Map pushComment(HttpServletRequest request){
+        return loadService.pushComment(request);
     }
 }

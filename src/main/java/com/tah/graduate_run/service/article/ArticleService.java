@@ -3,9 +3,11 @@ package com.tah.graduate_run.service.article;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.tah.graduate_run.config.MyToken;
 import com.tah.graduate_run.entity.Article;
-import com.tah.graduate_run.entity.UpArticle;
+import com.tah.graduate_run.entity.Comment;
 import com.tah.graduate_run.mapper.ArticleMapper;
+import com.tah.graduate_run.mapper.CommentMapper;
 import com.tah.graduate_run.mapper.UserNumberMapper;
+import com.tah.graduate_run.untils.MyMap;
 import com.tah.graduate_run.untils.Other;
 import com.tah.graduate_run.untils.Result;
 import org.slf4j.Logger;
@@ -20,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -33,80 +34,76 @@ public class ArticleService {
 
     @Resource
     ArticleMapper mapper;
-
+    @Resource
+    CommentMapper commentMapper;
     @Resource
     UserNumberMapper userNumberMapper;
 
     public Map likeNumUp(Map map) {
-        mapper.likeNumUp(map);
-        mapper.insertLike(map);
+        String type = map.get("type").toString();
+        if (type.equals("comment")) {
+            userNumberMapper.commentLikeNum(map);
+        } else {
+            userNumberMapper.likeNumUp(map);
+        }
+        userNumberMapper.insertLike(map);
         return Result.success();
     }
 
     public Map likeNumDown(Map map) {
-        mapper.likeNumDown(map);
-        mapper.deleteLike(map);
+        String type = map.get("type").toString();
+        if (type.equals("comment")) {
+            userNumberMapper.commentLikeNumDown(map);
+        } else {
+            userNumberMapper.likeNumDown(map);
+        }
+        userNumberMapper.deleteLike(map);
         return Result.success();
     }
-    public Map getArticleInfo(HttpServletRequest request,String id){
+
+
+    public Map getArticleInfo(HttpServletRequest request, String id) {
         String uid = MyToken.getUid(request);
-        List<Long> focus = userNumberMapper.getFocus(uid);
-        List<Long> likes = mapper.myLikes(uid);
+        List<Long> focus = userNumberMapper.getFocus(uid, "user");
+        List<Long> likes = userNumberMapper.myLikes("article", uid);
         Article info = mapper.getArticleInfo(id);
         //判断是否关注过
-        if (focus.contains(info.getUid())) {
-            info.setFocus(true);
-        }
+        info.setBeFollow(focus.contains(info.getUid()));
         //判断是否点赞过
-        if (likes.contains(info.getId())){
-            info.setLike(true);
-        }
-        //把图片放入picArr集合
-        if (!info.getPic().isEmpty()) {
-            info.setPicArr(Arrays.asList(info.getPic().split(",")));
-        }
+        info.setBeLike(likes.contains(info.getId()));
         log.info(info.toString());
         return Result.success().add("info", info);
     }
 
-    public Map getArticle(HttpServletRequest request,Integer pagerNum, Integer pagerSize) {
-        List<Article> list = mapper.getArticle(pagerNum,pagerSize);
+    public Map getArticle(HttpServletRequest request,
+                          String searchTag, String searchUid,
+                          String feedType, String orderKey,
+                          Integer pagerNum, Integer pagerSize) {
+        //指定用户
+        if (!searchUid.isEmpty()) {
+            searchUid = "and a.`uid`=" + searchUid;
+        }
+        //指定话题
+        if (!searchTag.isEmpty()) {
+            searchTag = "and a.`tags` like'#" + searchTag + "#'";
+        }
+        log.info(searchUid);
+        List<Article> list = mapper.getArticle(searchTag, searchUid, feedType, orderKey, pagerNum, pagerSize);
         String uid = MyToken.getUid(request);
-        List<Long> likes = mapper.myLikes(uid);
-        for (Article article : list) {
-            if (likes.contains(article.getId())){
-                article.setLike(true);
-            }
-            try {
-                if (!article.getPic().isEmpty()) {
-                    article.setPicArr(Arrays.asList(article.getPic().split(",")));
-                }
-            } catch (Exception e) {
 
+        List<Long> likes = userNumberMapper.myLikes("article", uid);
+        for (Article article : list) {
+            article.setBeLike(likes.contains(article.getId()));
+            String hot_ids = article.getRecent_hot_reply_ids();
+            if (hot_ids != null && !hot_ids.isEmpty()) {
+                String firstId = hot_ids.split(",")[0];
+                Comment firstComment = commentMapper.getFirstComment(firstId);
+                article.setFirstComment(firstComment);
             }
         }
         return Result.success().add("rows", list);
     }
 
-    public Map getUserAllArticle(HttpServletRequest request,String uid){
-        List<Article> list = mapper.getUserAllArticle(uid);
-        String tokenid = MyToken.getUid(request);
-        log.info(tokenid);
-        List<Long> likes = mapper.myLikes(tokenid);
-        for (Article article : list) {
-            if (likes.contains(article.getId())){
-                article.setLike(true);
-            }
-            try {
-                if (!article.getPic().isEmpty()) {
-                    article.setPicArr(Arrays.asList(article.getPic().split(",")));
-                }
-            } catch (Exception e) {
-
-            }
-        }
-        return Result.success().add("rows", list);
-    }
     public Map createArticle(HttpServletRequest request) {
         try {
             String urls = upPics(request);
@@ -116,9 +113,9 @@ public class ArticleService {
             String json = params.getParameter("article");
             log.info(json);
             JsonMapper jsonMapper = new JsonMapper();
-            UpArticle article = jsonMapper.readValue(json, UpArticle.class);
+            Article article = jsonMapper.readValue(json, Article.class);
             article.setPic(urls);
-            log.info(article.toString()+"92");
+            log.info(article.toString() + "92");
             mapper.createArticle(article);
             log.info(article.toString());
             return Result.success().add("id", article.getId());
@@ -143,12 +140,12 @@ public class ArticleService {
             String randomNumber = Other.getRandomNumber(10);
             File newFile = new File(articlepicsPath + "/" + randomNumber + ".jpg");
             file.transferTo(newFile);
-            String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
-                    "/graduate/articlepics/" + randomNumber + ".jpg";
+            String url =/* request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +*/
+                    "/api/graduate/articlepics/" + randomNumber + ".jpg";
             resultsPath.add(url);
         }
         String result = resultsPath.toString();
         //list转string后去除首尾[]中括号
-        return result.substring(1, result.length() - 1);
+        return result.substring(1, result.length() - 1).replaceAll(" ", "");
     }
 }

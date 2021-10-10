@@ -3,8 +3,8 @@ package com.tah.graduate_run.service;
 import com.tah.graduate_run.mapper.SysUserMapper;
 import com.tah.graduate_run.untils.Code;
 import com.tah.graduate_run.untils.MyMap;
+import com.tah.graduate_run.untils.Other;
 import com.tah.graduate_run.untils.Result;
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,7 +15,11 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +34,29 @@ public class PicService {
 
     @Resource
     SysUserMapper userMapper;
+
+    public String up(HttpServletRequest request,String url){
+        try {
+            URL url1 = new URL(url);
+            URLConnection uc = url1.openConnection();
+            InputStream inputStream = uc.getInputStream();
+
+            FileOutputStream out = new FileOutputStream("D:\\graduate\\articlepics\\"+url);
+            int j = 0;
+            while ((j = inputStream.read()) != -1) {
+                out.write(j);
+            }
+            inputStream.close();
+            out.close();
+            return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() +
+                    "/graduate/articlepics/" +url;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+
+    }
+
 
 
     public Map uptoQiNiu(MultipartFile file) {

@@ -17,7 +17,7 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
-@ServerEndpoint(value = "/websocket/{userName}")
+@ServerEndpoint(value = "/websocket/{}")
 @Component
 public class WebSocketService {
     private static final Logger log = LoggerFactory.getLogger(WebSocketService.class);
@@ -40,7 +40,7 @@ public class WebSocketService {
      * 连接建立成功调用的方法
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam("userName") String userName) {
+    public void onOpen(Session session, @PathParam("") String userName) {
         if (!webSocketMap.containsKey(userName)) {
             addOnlineCount(); // 在线数 +1
         }
@@ -89,7 +89,7 @@ public class WebSocketService {
         if (message != null && !message.isEmpty()) {
 
         }
-        sendMessage("雷军",message);
+//        sendMessage("雷军",message);
     }
 
     /**
