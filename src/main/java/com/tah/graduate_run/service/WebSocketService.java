@@ -17,7 +17,7 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 
-@ServerEndpoint(value = "/websocket/{}")
+//@ServerEndpoint(value = "/websocket/{}")
 @Component
 public class WebSocketService {
     private static final Logger log = LoggerFactory.getLogger(WebSocketService.class);
