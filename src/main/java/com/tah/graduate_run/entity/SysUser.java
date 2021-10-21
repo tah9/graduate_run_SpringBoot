@@ -7,7 +7,7 @@ import lombok.Data;
  */
 @Data
 public class SysUser {
-    private long uid;
+    private Integer uid;
     private String username;
     private String password;
     private String create_time;
@@ -17,14 +17,14 @@ public class SysUser {
     private String userAvatar;
     private int height;
     private int weight;
-    private long gender;
+    private Integer gender;
     private String birthday;
     private String cover;
     String bio;
     //关注数，粉丝数，被点赞数
-    long follow;
-    long fans;
-    long be_like_num;
+    Integer follow;
+    Integer fans;
+    Integer be_like_num;
 
     //是否记录人脸
     boolean hasFace;

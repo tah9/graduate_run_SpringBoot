@@ -1,11 +1,13 @@
 package com.tah.graduate_run.controller;
 
-import com.tah.graduate_run.service.EnterExit;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.tah.graduate_run.entity.RunUser;
+import com.tah.graduate_run.service.EnterExitSerive;
+import com.tah.graduate_run.untils.Result;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,16 +18,25 @@ import java.util.Map;
 public class RunController {
 
     @Resource
-    EnterExit enterExit;
+    EnterExitSerive enterExitSerive;
 
     @PostMapping("/enter")
-    public Map enterUser(String userName){
-        return enterExit.enterUser(userName);
+    public Map enterUser(@RequestBody Map map){
+        return enterExitSerive.enterUser(map.get("username").toString());
     }
 
     @PostMapping("/exit")
-    public Map exitUser(String userName){
-        return enterExit.exitUser(userName);
+    public Map exitUser(@RequestBody Map map){
+        return enterExitSerive.exitUser(map.get("username").toString());
+    }
+
+    @GetMapping("/getUser")
+    public Map getBeingUser() {
+        List<String> namelist = new ArrayList<>();
+        for (RunUser runUser : EnterExitSerive.beUser) {
+            namelist.add(runUser.getUsername());
+        }
+        return Result.success(namelist);
     }
 
 }

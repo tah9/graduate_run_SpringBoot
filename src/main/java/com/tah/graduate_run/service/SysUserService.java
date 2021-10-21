@@ -76,6 +76,7 @@ public class SysUserService {
             userMapper.upLogin(user);
             MyMap map = new MyMap<>();
             map.add("uid", user.getUid());
+//            WebSocketService.webSocketMap.
             return Result.success().add("token", MyToken.create(map));
         }
     }
@@ -166,7 +167,7 @@ public class SysUserService {
             user.setUserAvatar(userAvatar == null ? tokenUser.getUserAvatar() : userAvatar);
             user.setBio(bio == null ? tokenUser.getBio() : bio);
             user.setUsername(username == null ? tokenUser.getUsername() : username);
-            user.setGender(gender==null?tokenUser.getGender():Long.parseLong(gender));
+            user.setGender(gender==null?tokenUser.getGender():Integer.parseInt(gender));
             user.setBirthday(birthday == null ? tokenUser.getBirthday() : birthday);
             user.setHeight(height == null ? tokenUser.getHeight() : Integer.parseInt(height));
             user.setWeight(weight == null ? tokenUser.getWeight() : Integer.parseInt(weight));

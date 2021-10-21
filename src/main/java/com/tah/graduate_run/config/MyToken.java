@@ -45,7 +45,7 @@ public class MyToken {
 //    }
 
     private static final String SECRET = "asdfjadfjakldsjfladsf";//私密key
-    private static final Long TTL_EXPIRATION = 1000L * 60 * 240 * 60; //过期时间240h
+    private static final long TTL_EXPIRATION = 1000L * 60 * 240 * 60; //过期时间240h
     private static final String ISSUER = "pibigstar";//发行人
 
     /**
@@ -56,7 +56,7 @@ public class MyToken {
 
         byte[] secretBytes = DatatypeConverter.parseBase64Binary(SECRET);
         Key secretKey = new SecretKeySpec(secretBytes, signature.getJcaName());
-        Long expiration = System.currentTimeMillis() / 1000 + TTL_EXPIRATION;
+        long expiration = System.currentTimeMillis() / 1000 + TTL_EXPIRATION;
 
         JwtBuilder builder = Jwts.builder()
                 .setIssuedAt(new Date())
@@ -91,7 +91,7 @@ public class MyToken {
 //        log.info(map.toString());
 //        SysUser user = new SysUser();
 //        user.setUsername(map.get("username").toString());
-//        user.setUid(Long.parseLong(map.get("uid").toString()));
+//        user.setUid(Integer.parseInt(map.get("uid").toString()));
 //        user.setCreate_time(map.get("create_time").toString());
 //        user.setPhone_number(map.get("phone_number").toString());
 //        user.setLogin_ip(map.get("login_ip").toString());

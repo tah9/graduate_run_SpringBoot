@@ -9,16 +9,16 @@ import lombok.ToString;
 @Data
 @ToString
 public class Tag {
-    long id;
+    Integer id;
     String title;
     String logo;
     String cover;
     String description;
-    long follownum;
-    long hot_num;
-    long dateline;
-    long lastupdate;
-    long feednum;
+    Integer follownum;
+    Integer hot_num;
+    Integer dateline;
+    Integer lastupdate;
+    Integer feednum;
     String intro;
     String follow_list;
     String keywords;

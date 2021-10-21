@@ -24,6 +24,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
     private String articlepicsPath;
     @Value("${box-path}")
     private String boxPath;
+    @Value("${root-path}")
+    private String rootPath;
 
 
     @Override
@@ -33,13 +35,12 @@ public class InterceptorConfig implements WebMvcConfigurer {
          * 如果访问的资源路径是以“/graduate/face/”开头的，
          * 就给我映射到faceFilePath，去找你要的资源
          */
-        registry.addResourceHandler("/graduate/face/**"
-                , "/graduate/emoji/**", "/graduate/articlepics/**"
-                ,"/graduate/box/**")
+        registry.addResourceHandler("/graduate/**")
                 .addResourceLocations("file:" + faceFilePath)
                 .addResourceLocations("file:" + emojiFilePath)
                 .addResourceLocations("file:" + articlepicsPath)
-                .addResourceLocations("file:" + boxPath);
+                .addResourceLocations("file:" + boxPath)
+                .addResourceLocations("file:" + rootPath);
     }
 
 //    /**

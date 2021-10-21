@@ -32,14 +32,14 @@ public interface CommentMapper {
     void insertComment(Comment comment);
 
     @Update("update article set replynum=replynum+1 where id=${id}")
-    void updateArticleComment(long id);
+    void updateArticleComment(Integer id);
 
     @Update("update article_comment set replynum=replynum+1 where id=${rrid}")
-    void updateCommentReplyNum(long rrid);
+    void updateCommentReplyNum(Integer rrid);
 
     @Select("select recent_reply_ids from article_comment where id=${id}")
-    String queryReplyIds(long id);
+    String queryReplyIds(Integer id);
 
     @Update("update article_comment set recent_reply_ids='${newids}' where id=${rrid}")
-    void updateReplyIds(String newids, long rrid);
+    void updateReplyIds(String newids, Integer rrid);
 }

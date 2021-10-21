@@ -42,7 +42,7 @@ public class SysUserInfoService {
         try {
             SysUser user = mapper.getUserInfo(map.get("username") + "");
             String uid = MyToken.getUid(request);
-            List<Long> focus = userNumberMapper.getFocus(uid,"user");
+            List<Integer> focus = userNumberMapper.getFocus(uid,"user");
             //判断是否关注过
             user.setBeFollow(focus.contains(user.getUid()));
             return Result.success().add("user", user);

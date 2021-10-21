@@ -64,8 +64,8 @@ public class ArticleService {
 
     public Map getArticleInfo(HttpServletRequest request, String id) {
         String uid = MyToken.getUid(request);
-        List<Long> focus = userNumberMapper.getFocus(uid, "user");
-        List<Long> likes = userNumberMapper.myLikes("article", uid);
+        List<Integer> focus = userNumberMapper.getFocus(uid, "user");
+        List<Integer> likes = userNumberMapper.myLikes("article", uid);
         Article info = mapper.getArticleInfo(id);
         //判断是否关注过
         info.setBeFollow(focus.contains(info.getUid()));
@@ -91,7 +91,7 @@ public class ArticleService {
         List<Article> list = mapper.getArticle(searchTag, searchUid, feedType, orderKey, pagerNum, pagerSize);
         String uid = MyToken.getUid(request);
 
-        List<Long> likes = userNumberMapper.myLikes("article", uid);
+        List<Integer> likes = userNumberMapper.myLikes("article", uid);
         for (Article article : list) {
             article.setBeLike(likes.contains(article.getId()));
             String hot_ids = article.getRecent_hot_reply_ids();

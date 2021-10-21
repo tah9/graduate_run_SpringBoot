@@ -9,23 +9,23 @@ import lombok.ToString;
 @Data
 @ToString
 public class Comment {
-    long id;
-    long fid;
-    long uid;
-    long rid;
-    long rrid;
-    long replynum;
+    Integer id;
+    Integer fid;
+    Integer uid;
+    Integer rid;
+    Integer rrid;
+    Integer replynum;
     String message;
-    long likenum;
-    long dateline;
+    Integer likenum;
+    Integer dateline;
     String pic;
     int status;
     String rusername;
-    long feedUid;
+    Integer feedUid;
     int isFeedAuthor;
     String username;
     String userAvatar;
-    long rank_score;
+    Integer rank_score;
     String recent_reply_ids;
     //是否已点赞
     boolean beLike;

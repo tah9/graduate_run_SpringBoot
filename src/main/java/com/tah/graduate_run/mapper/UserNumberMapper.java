@@ -16,7 +16,7 @@ import java.util.Map;
 public interface UserNumberMapper {
     //查询关注的id
     @Select("SELECT follow_id FROM user_fans WHERE uid=#{uid} and type like'${type}'")
-    List<Long> getFocus(String uid,String type);
+    List<Integer> getFocus(String uid,String type);
 
 
     //查询关注的用户
@@ -48,7 +48,7 @@ public interface UserNumberMapper {
     void deleteLike(@Param("params") Map map);
 
     @Select("select id from article_like where uid=${uid} and type like '${type}'")
-    List<Long> myLikes(String type, String uid);
+    List<Integer> myLikes(String type, String uid);
 
     @Insert("insert into user_fans(uid,follow_id,type) values(#{uid},#{follow_id},#{type})")
     void toFocus(@Param("params") Map map);

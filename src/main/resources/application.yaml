@@ -2,7 +2,7 @@ face-file-path: D:/graduate/face/
 emoji-file-path: D:/graduate/emoji/
 articlepics-path: D:/graduate/articlepics/
 box-path: D:/graduate/box/
-
+root-path: D:/graduate/
 
 spring:
 

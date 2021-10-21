@@ -48,7 +48,7 @@ public class TagService {
     private static final Logger log= LoggerFactory.getLogger(TagService.class);
     public Map getTagInfo(HttpServletRequest request,String title){
         String uid = MyToken.getUid(request);
-        List<Long> focusTag = userNumberMapper.getFocus(uid, "tag");
+        List<Integer> focusTag = userNumberMapper.getFocus(uid, "tag");
         Tag tag = tagMapper.getTagInfo(title);
         tag.setBeFollow(focusTag.contains(tag.getId()));
         String[] split = tag.getFollow_list().split(",");

@@ -37,7 +37,7 @@ public class CommentLoadService {
     public Map getCommentList(HttpServletRequest request, String fid) {
         String uid = MyToken.getUid(request);
         List<Comment> list = commentMapper.getArticleComment(fid);
-        List<Long> commentLikes = userNumberMapper.myLikes("comment", uid);
+        List<Integer> commentLikes = userNumberMapper.myLikes("comment", uid);
         for (int i = 0; i < list.size(); i++) {
             Comment comment = list.get(i);
             comment.setBeLike(commentLikes.contains(comment.getId()));
@@ -53,12 +53,12 @@ public class CommentLoadService {
             comment.setPic(s);
             MultipartHttpServletRequest params = ((MultipartHttpServletRequest) request);
 //            fid,uid,rid,rrid,message,dateline,pic,rusername,isFeedAuthor
-            comment.setFid(Long.parseLong(params.getParameter("fid")));
-            comment.setUid(Long.parseLong(uid));
-            comment.setRid(Long.parseLong(params.getParameter("rid")));
-            comment.setRrid(Long.parseLong(params.getParameter("rrid")));
+            comment.setFid(Integer.parseInt(params.getParameter("fid")));
+            comment.setUid(Integer.parseInt(uid));
+            comment.setRid(Integer.parseInt(params.getParameter("rid")));
+            comment.setRrid(Integer.parseInt(params.getParameter("rrid")));
             comment.setMessage(params.getParameter("message"));
-            comment.setDateline(Long.parseLong(params.getParameter("dateline")));
+            comment.setDateline(Integer.parseInt(params.getParameter("dateline")));
             comment.setRusername(params.getParameter("rusername"));
             comment.setIsFeedAuthor(Integer.parseInt(params.getParameter("isFeedAuthor")));
             log.info(comment.toString());

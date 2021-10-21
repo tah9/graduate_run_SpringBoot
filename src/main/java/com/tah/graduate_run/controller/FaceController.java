@@ -31,4 +31,10 @@ public class FaceController {
     public Map addFace(HttpServletRequest request,@PathVariable("username")String username){
         return faceUserService.addFace(request,username);
     }
+
+
+    @PostMapping("/runMessage")
+    public Map getRunMessage(@RequestBody Map map){
+        return faceUserService.getRunMessage(map);
+    }
 }

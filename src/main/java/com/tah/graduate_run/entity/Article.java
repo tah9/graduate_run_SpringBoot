@@ -12,23 +12,23 @@ import java.util.Map;
 @Data
 @ToString
 public class Article {
-    private long id;
+    private Integer id;
     private String message_title;
     private String message;
     private String message_cover;
-    private long uid;
+    private Integer uid;
     private int likenum;
     private int commentnum;
     private int favnum;
     private int status;
-    private long dateline;
+    private Integer dateline;
     private String isheadline;
     private String tags;
     private String device_title;
     private String feedType;
     private String pic;
     private String share_num;
-    long rank_score;
+    Integer rank_score;
     String recent_reply_ids;
     String recent_hot_reply_ids;
     String replynum;

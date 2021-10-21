@@ -33,6 +33,9 @@ public interface SysUserMapper {
     @Update("update sys_user set password=#{password} where uid = #{uid}")
     void changePWD(SysUser user);
 
+    @Select("select * from sys_user where username=#{username}")
+    SysUser getUserByName(String username);
+
 
     @Select("Select username from sys_user")
     List<String> getAll();
