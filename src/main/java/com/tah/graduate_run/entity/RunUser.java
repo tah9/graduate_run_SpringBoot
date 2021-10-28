@@ -16,14 +16,12 @@ import java.util.Queue;
 public class RunUser {
     private String username;
     private Integer uid;
-    private Integer belonging;
     public List<U_Record> u_records = new ArrayList<>();
 
     public RunUser(){}
 
-    public RunUser(String username, Integer uid, Integer belonging) {
+    public RunUser(String username, Integer uid) {
         this.username = username;
         this.uid = uid;
-        this.belonging = belonging;
     }
 }

@@ -33,29 +33,34 @@ public class EnterExitSerive {
     public static List<RunUser> beUser = new ArrayList<>();
     private static final Logger log = LoggerFactory.getLogger(EnterExitSerive.class);
 
-    public Map enterUser(String username) {
+    public Map enterUser(Map map) {
+        String username = (String) map.get("username");
+        Long datetime = (Long) map.get("datetime");
+        Integer pid = (Integer) map.get("pid");
+        //检查是否已填加
         for (RunUser runUser : beUser) {
             if (runUser.getUsername().equals(username)) {
-                return Result.fail(000, "");
+                return Result.fail(0, "此人脸已加入");
             }
         }
+        log.info(map.toString());
         SysUser user = sysUserMapper.getUserInfo(username);
-        Integer belonging = recordMapper.getBelonging(user.getUid());
-        if (belonging == null) {
-            belonging = 0;
-        }
-        RunUser runUser = new RunUser(username, user.getUid(), belonging + 1);
+        RunUser runUser = new RunUser(username, user.getUid());
+        runUser.u_records.add(new U_Record(datetime,pid));
         beUser.add(runUser);
+
         log.info(beUser.toString());
         return Result.success();
     }
 
-    public Map exitUser(String userName) {
-
+    public Map exitUser(Map map) {
+        String username = (String) map.get("username");
+        Long datetime = (Long) map.get("datetime");
+        Integer pid = (Integer) map.get("pid");
         Iterator<RunUser> iterator = beUser.iterator();
         while (iterator.hasNext()) {
             RunUser runUser = iterator.next();
-            if (runUser.getUsername().equals(userName)) {
+            if (runUser.getUsername().equals(username)) {
                 insertRecord(runUser);
                 iterator.remove();
                 break;
@@ -77,9 +82,16 @@ public class EnterExitSerive {
         BigDecimal speed = speedAndTime[0];
         BigDecimal length = speedAndTime[1];
         Long time = Math.abs(u_records.get(u_records.size() - 1).getDatetime() - u_records.get(0).getDatetime());
+        List<Integer> resultJson = new ArrayList<>();
+        for (U_Record record : u_records) {
+            resultJson.add(record.getPid());
+        }
+        String json = resultJson.toString().replaceAll(" ", "");
+        log.info(json);
         userRecordMapper.insertUserRecord(runUser.getUid(),speed.longValue(),
                 u_records.get(0).getDatetime(), time,
-                u_records.toString(),length.intValue());
+                json,
+                length.intValue());
     }
 
     public BigDecimal[] getSpeedAndTime(List<U_Record> list) {
@@ -87,17 +99,13 @@ public class EnterExitSerive {
             return new BigDecimal[]{new BigDecimal(0), new BigDecimal(0)};
         }
         BigDecimal allLength = new BigDecimal(0);
-        for (int i = 1; i < list.size(); i++) {
-            U_Record oRecord = list.get(i - 1);
-            U_Record nRecord = list.get(i);
-            Probe oProbe = recordMapper.getProbe(oRecord.getPid());
-            Probe nProbe = recordMapper.getProbe(nRecord.getPid());
-            Integer offLength = Math.abs(Integer.parseInt(nProbe.getP_location()) -
-                    Integer.parseInt(oProbe.getP_location()));
-            log.info(i + ">>" + offLength);
+        for (U_Record u_record : list) {
+            Probe probe = recordMapper.getProbe(u_record.getPid());
+            Integer offLength = Integer.valueOf(probe.getP_location());
             allLength = allLength.add(new BigDecimal(offLength));
         }
         log.info(">" + allLength.toString());
+
         BigDecimal scale = allLength.divide(new BigDecimal(1000), 4, BigDecimal.ROUND_HALF_UP);
         BigDecimal time = new BigDecimal(Math.abs(list.get(list.size() - 1).getDatetime() - list.get(0).getDatetime()));
         BigDecimal resultTime = time.divide(scale, 4, BigDecimal.ROUND_HALF_UP);

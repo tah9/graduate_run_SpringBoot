@@ -79,6 +79,7 @@ public class FaceUserService {
         List<Float> lengthList = new ArrayList<>();
         List<Float> timeList = new ArrayList<>();
         Map resultMap = new HashMap();
+        //每天86400000毫秒
         for (Long i = startTime; i < endTime; i+=86400000) {
             Float length = 0F;
             Float time = 0F;
@@ -160,9 +161,11 @@ public class FaceUserService {
         //距离米转Km
         length = length.divide(new BigDecimal("1000"), 2, BigDecimal.ROUND_HALF_UP);
         map.put("length", length.floatValue());
+
         BigDecimal todayKcal = new BigDecimal(user.getWeight()).multiply(length).multiply(new BigDecimal("1.036"));
         map.put("kcal", todayKcal.intValue());
         BigDecimal hour = new BigDecimal((time.longValue() / 1000) + "").divide(new BigDecimal("3600"), 2, BigDecimal.ROUND_HALF_UP);
+
         BigDecimal metabolic = todayKcal.divide(new BigDecimal(user.getWeight() + "").multiply(hour), 2, BigDecimal.ROUND_HALF_UP);
         map.put("metabolic", metabolic.floatValue());
         map.put("time", time.intValue());

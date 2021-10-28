@@ -22,12 +22,12 @@ public class RunController {
 
     @PostMapping("/enter")
     public Map enterUser(@RequestBody Map map){
-        return enterExitSerive.enterUser(map.get("username").toString());
+        return enterExitSerive.enterUser(map);
     }
 
     @PostMapping("/exit")
     public Map exitUser(@RequestBody Map map){
-        return enterExitSerive.exitUser(map.get("username").toString());
+        return enterExitSerive.exitUser(map);
     }
 
     @GetMapping("/getUser")

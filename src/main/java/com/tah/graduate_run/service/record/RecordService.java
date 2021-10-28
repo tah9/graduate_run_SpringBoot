@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,41 +28,18 @@ public class RecordService {
     UserRecordMapper userRecordMapper;
 
 
-
     public Map insertRecord(Map map) {
         Long datetime = (Long) map.get("datetime");
         String username = (String) map.get("username");
         Integer pid = (Integer) map.get("pid");
         for (RunUser runUser : EnterExitSerive.beUser) {
             if (runUser.getUsername().equals(username)){
-                runUser.u_records.add(new U_Record(datetime, runUser.getUid(), pid,runUser.getBelonging()));
-                recordMapper.insertRecord(datetime, runUser.getUid(), pid,runUser.getBelonging());
+                runUser.u_records.add(new U_Record(datetime, pid));
+                log.info(runUser.u_records.toString());
                 return Result.success();
             }
         }
-        return Result.fail(000, "");
-    }
-
-    public Map getRecord(String username) {
-        SysUser user = sysUserMapper.getUserByName(username);
-        Integer belonging = recordMapper.getBelonging(user.getUid());
-        if (belonging == null) {
-            belonging = 0;
-        }
-        List<Map> resultList = new ArrayList<>();
-        for (Integer integer = belonging; integer > 0; integer--) {
-            List<U_Record> list = recordMapper.getRecord(user.getUid(), integer);
-            log.info(list.toString());
-            Map<Object, Object> map = new HashMap<>();
-            BigDecimal speed = getSpeed(list);
-            Long time = Math.abs(list.get(list.size() - 1).getDatetime() - list.get(0).getDatetime());
-            String resultTime = convertMillis(time);
-            map.put("datetime", Math.min(list.get(list.size() - 1).getDatetime() , list.get(0).getDatetime()));
-            map.put("time", resultTime);
-            map.put("speed", speedFormat(speed.longValue()));
-            resultList.add(map);
-        }
-        return Result.success(resultList);
+        return Result.fail(0, "出错咯");
     }
 
 
@@ -91,14 +66,9 @@ public class RecordService {
             return new BigDecimal(0);
         }
         BigDecimal allLength = new BigDecimal(0);
-        for (int i = 1; i < list.size(); i++) {
-            U_Record oRecord = list.get(i - 1);
-            U_Record nRecord = list.get(i);
-            Probe oProbe = recordMapper.getProbe(oRecord.getPid());
-            Probe nProbe = recordMapper.getProbe(nRecord.getPid());
-            Integer offLength = Math.abs(Integer.parseInt(nProbe.getP_location()) -
-                    Integer.parseInt(oProbe.getP_location()));
-            log.info(i + ">>" + offLength);
+        for (U_Record u_record : list) {
+            Probe probe = recordMapper.getProbe(u_record.getPid());
+            Integer offLength = Integer.valueOf(probe.getP_location());
             allLength = allLength.add(new BigDecimal(offLength));
         }
         log.info(">" + allLength.toString());

@@ -12,16 +12,8 @@ import java.util.List;
  */
 public interface RecordMapper {
 
-    @Select("SELECT MAX(belonging)  FROM u_record WHERE uid=${uid}")
-    Integer getBelonging(Integer uid);
-
-    @Insert("insert into u_record (datetime,uid,pid,belonging)" +
-            " values(#{datetime},#{uid},#{pid},#{belonging}) ")
-    void insertRecord(Long datetime, Integer uid, Integer pid,Integer belonging);
 
     @Select("select * from probe where p_id=${pid}")
     Probe getProbe(Integer pid);
 
-    @Select("select * from u_record where uid=${uid} and belonging=${belonging} ORDER BY DATETIME")
-    List<U_Record> getRecord(Integer uid,Integer belonging);
 }

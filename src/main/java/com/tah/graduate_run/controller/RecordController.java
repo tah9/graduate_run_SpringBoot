@@ -27,10 +27,6 @@ public class RecordController {
         return recordService.insertRecord(map);
     }
 
-    @GetMapping("/get")
-    public Map getRecord(@RequestParam String username){
-        return recordService.getRecord(username);
-    }
 
     @GetMapping("/getMaxSpeed")
     public Map getUserRecord(){

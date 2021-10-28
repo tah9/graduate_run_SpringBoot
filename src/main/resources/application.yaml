@@ -5,14 +5,13 @@ box-path: D:/graduate/box/
 root-path: D:/graduate/
 
 spring:
-
   jackson:
     default-property-inclusion: non_null
   datasource:
     username: root
     password:  123456++q #admin
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql:///graduate_run?serverTimezone=GMT%2B8&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/graduate_run?serverTimezone=GMT%2B8&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
 
   redis:
     database: 0
